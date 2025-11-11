@@ -1,0 +1,39 @@
+<?php
+set_time_limit(0);
+$host = '0.0.0.0'; // aceita conexões externas
+$port = 5000;
+
+$server = stream_socket_server("tcp://$host:$port", $errno, $errstr);
+if (!$server) {
+    die("Erro ao abrir socket: $errstr ($errno)\n");
+}
+echo "Servidor ouvindo em $host:$port\n";
+$conn = @stream_socket_accept($server, -1);
+if (!$conn) {
+    echo "Nenhuma conexão.\n";
+    exit;
+}
+echo "Cliente conectado.\n";
+
+while (!feof($conn)) {
+    // Ler do cliente (sem bloqueio excessivo)
+    $data = trim(fgets($conn));
+    if ($data !== '') {
+        if (strtolower($data) === 'sair') {
+            echo "Cliente encerrou.\n";
+            break;
+        }
+        echo "Cliente: $data\n";
+    }
+    // Envia resposta do servidor (entrada do usuário)
+    echo "Você: ";
+    $msg = trim(fgets(STDIN));
+    fwrite($conn, $msg . PHP_EOL);
+    if (strtolower($msg) === 'sair') {
+        break;
+    }
+}
+
+fclose($conn);
+fclose($server);
+echo "Servidor finalizado.\n";
