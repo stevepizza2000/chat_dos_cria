@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set('America/Sao_Paulo');
+
 if (!empty($_POST['usuario']) && !empty($_POST['mensagem'])) {
     $usuario = htmlspecialchars($_POST['usuario']);
     $mensagem = htmlspecialchars($_POST['mensagem']);
@@ -31,3 +33,4 @@ if (!empty($_POST['usuario']) && !empty($_POST['mensagem'])) {
 
 http_response_code(200);
 ?>
+
